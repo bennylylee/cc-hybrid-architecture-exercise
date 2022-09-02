@@ -10,9 +10,18 @@ spec:
   image:
     application: confluentinc/cp-server-connect:7.2.0
     init: confluentinc/confluent-init-container:2.4.0
+  build:
+    type: onDemand
+    onDemand: 
+      plugins:
+        locationType: url
+        url:
+          - name: jdbc-source-postgresql
+            archivePath: https://raw.githubusercontent.com/albefaedda/cc-hybrid-architecture-exercise/main/cfk/confluentinc-kafka-connect-jdbc-10.5.2.zip
+            checksum: 453f509fba18018ba6a40d044cc6bf01afe2a6226ffc9c9b95ba4c605e59814733aa0c6cb2556b4546b1bc9bf44005feeb0953b049f134fe102c364f9d346d39
   dependencies:
     kafka:
-      bootstrapEndpoint: pkc-l6wr6.europe-west2.gcp.confluent.cloud:9092
+      bootstrapEndpoint: ${kafka.srv}
       authentication:
         type: plain
         jaasConfig:
@@ -21,10 +30,14 @@ spec:
         enabled: true
         ignoreTrustStoreConfig: true 
     schemaRegistry:
-      url: https://psrc-kk5gg.europe-west3.gcp.confluent.cloud
+      url: ${sr.url}
       authentication:
         type: basic
         basic:
           secretRef: ccloud-sr-credentials
   mountedSecrets:
   - secretRef: postgres-credentials
+
+
+
+  
